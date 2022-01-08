@@ -13,6 +13,14 @@ void Robot::RobotInit() {
   m_chooser.SetDefaultOption(kAutoNameDefault, kAutoNameDefault);
   m_chooser.AddOption(kAutoNameCustom, kAutoNameCustom);
   frc::SmartDashboard::PutData("Auto Modes", &m_chooser);
+
+  m_joystick_0.SetXChannel(0);
+  m_joystick_0.SetYChannel(1);
+  m_joystick_0.SetZChannel(2);
+  
+  m_joystick_1.SetXChannel(4);
+  m_joystick_1.SetYChannel(5);
+  m_joystick_1.SetZChannel(3);
 }
 
 /**
@@ -59,7 +67,15 @@ void Robot::AutonomousPeriodic() {
 
 void Robot::TeleopInit() {}
 
-void Robot::TeleopPeriodic() {}
+void Robot::TeleopPeriodic() {
+  double deg, speed, turn;
+
+  deg = Joystick_Rad(m_joystick_0.GetX(), m_joystick_0.GetY());
+  speed = Joystcik_Speed(m_joystick_0.GetX(), m_joystick_0.GetY());
+  turn = m_joystick_1.GetX();
+  
+  MecanumControl(deg, speed, turn, this);
+}
 
 void Robot::DisabledInit() {}
 
