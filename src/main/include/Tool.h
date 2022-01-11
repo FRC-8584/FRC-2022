@@ -2,8 +2,10 @@
 #include <math.h>
 #include <algorithm>
 
+#include <frc/smartdashboard/SmartDashboard.h>
+
 // 搖桿物理誤差閥值常數
-const double _Joystick_Threshold = 0.05;
+const double _Joystick_Threshold = 0;
 // 馬達反轉陣列常數
 const bool _Moto_Reverse[4] = {false, false, false, true};
 
@@ -62,7 +64,13 @@ double Joystick_Rad(double x_val, double y_val) {
     }
   }
   else {
-  return atan(y_val / x_val);
+    double vec = pow(pow(x_val, 2) + pow(y_val, 2), 0.5);
+    if (y_val > 0) {
+      return acos(x_val/vec);
+    }
+    else {
+      return -1 * acos(x_val/vec);
+    }
   }
 }
 
@@ -112,7 +120,7 @@ void Speed_Retouch(double val[4]) {
   }
 }
 
-/** 速度等比例合理化
+/** 馬達控制
  *  @param val[] 速度陣列
  *  @param robot Robot Class
  */

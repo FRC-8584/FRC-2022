@@ -4,6 +4,8 @@
 
 #pragma once
 
+#include "AHRS.h"
+
 #include <string>
 
 #include <frc/TimedRobot.h>
@@ -11,6 +13,7 @@
 #include <frc/motorcontrol/PWMSparkMax.h>
 #include <frc/motorcontrol/PWMTalonSRX.h>
 #include <frc/Joystick.h>
+#include <frc/SPI.h>
 
 class Robot : public frc::TimedRobot {
  public:
@@ -36,6 +39,8 @@ class Robot : public frc::TimedRobot {
 
   frc::Joystick m_joystick_0{0};
   frc::Joystick m_joystick_1{0};
+
+  AHRS *nav_x = new AHRS(frc::SPI::Port::kMXP);
 
  private:
   frc::SendableChooser<std::string> m_chooser;
