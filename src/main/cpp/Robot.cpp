@@ -74,7 +74,6 @@ void Robot::TeleopPeriodic() {
   speed = Joystcik_Speed(m_joystick_0.GetX(), m_joystick_0.GetY());
   turn = m_joystick_1.GetX();
   
-  
   MecanumControl(deg, speed, turn, this);
   frc::SmartDashboard::PutNumber("moto_0", moto_0.Get());
   frc::SmartDashboard::PutNumber("moto_1", moto_1.Get());
