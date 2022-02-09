@@ -13,14 +13,6 @@ void Robot::RobotInit() {
   m_chooser.SetDefaultOption(kAutoNameDefault, kAutoNameDefault);
   m_chooser.AddOption(kAutoNameCustom, kAutoNameCustom);
   frc::SmartDashboard::PutData("Auto Modes", &m_chooser);
-
-  m_joystick_0.SetXChannel(0);
-  m_joystick_0.SetYChannel(1);
-  m_joystick_0.SetZChannel(2);
-  
-  m_joystick_1.SetXChannel(4);
-  m_joystick_1.SetYChannel(5);
-  m_joystick_1.SetZChannel(3);
 }
 
 /**
@@ -70,16 +62,11 @@ void Robot::TeleopInit() {}
 void Robot::TeleopPeriodic() {
   double deg, speed, turn;
 
-  deg = Joystick_Rad(m_joystick_0.GetX(), m_joystick_0.GetY());
-  speed = Joystcik_Speed(m_joystick_0.GetX(), m_joystick_0.GetY());
-  turn = m_joystick_1.GetX();
+  deg = Joystick_Rad(m_joystick.GetRawAxis(0), m_joystick.GetRawAxis(1));
+  speed = Joystcik_Speed(m_joystick.GetRawAxis(0), m_joystick.GetRawAxis(1));
+  turn = m_joystick.GetRawAxis(4);
   
   MecanumControl(deg, speed, turn, this);
-  frc::SmartDashboard::PutNumber("moto_0", moto_0.Get());
-  frc::SmartDashboard::PutNumber("moto_1", moto_1.Get());
-  frc::SmartDashboard::PutNumber("moto_2", moto_2.Get());
-  frc::SmartDashboard::PutNumber("moto_3", moto_3.Get());
-  frc::SmartDashboard::PutNumber("NavX", nav_x->GetAngle());
 }
 
 void Robot::DisabledInit() {}

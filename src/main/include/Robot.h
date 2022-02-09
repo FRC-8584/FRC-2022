@@ -5,6 +5,7 @@
 #pragma once
 
 #include "AHRS.h"
+#include "rev/CANSparkMax.h"
 
 #include <string>
 
@@ -12,6 +13,7 @@
 #include <frc/smartdashboard/SendableChooser.h>
 #include <frc/motorcontrol/PWMSparkMax.h>
 #include <frc/motorcontrol/PWMTalonSRX.h>
+#include <frc/motorcontrol/Spark.h>
 #include <frc/Joystick.h>
 #include <frc/SPI.h>
 
@@ -28,17 +30,23 @@ class Robot : public frc::TimedRobot {
   void TestInit() override;
   void TestPeriodic() override;
 
-  frc::PWMSparkMax moto_0{0};
-  frc::PWMSparkMax moto_1{1};
-  frc::PWMSparkMax moto_2{2};
-  frc::PWMSparkMax moto_3{3};
+  // frc::PWMSparkMax moto_0{0};
+  // frc::PWMSparkMax moto_1{1};
+  // frc::PWMSparkMax moto_2{2};
+  // frc::PWMSparkMax moto_3{3};
 
   frc::PWMTalonSRX moto_4{4};
   frc::PWMTalonSRX moto_5{5};
   frc::PWMTalonSRX moto_6{6};
 
-  frc::Joystick m_joystick_0{0};
-  frc::Joystick m_joystick_1{0};
+  rev::CANSparkMax motos[4] = {
+    rev::CANSparkMax{0, rev::CANSparkMax::MotorType::kBrushed},
+    rev::CANSparkMax{1, rev::CANSparkMax::MotorType::kBrushed},
+    rev::CANSparkMax{2, rev::CANSparkMax::MotorType::kBrushed},
+    rev::CANSparkMax{3, rev::CANSparkMax::MotorType::kBrushed}
+  };
+
+  frc::Joystick m_joystick{0};
 
   AHRS *nav_x = new AHRS(frc::SPI::Port::kMXP);
 

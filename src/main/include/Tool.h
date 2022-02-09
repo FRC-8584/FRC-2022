@@ -8,6 +8,8 @@
 const double _Joystick_Threshold = 0;
 // 馬達反轉陣列常數
 const bool _Moto_Reverse[4] = {false, false, false, true};
+// 馬達最大速度
+const double _Max_Speed = 0.3;
 
 /** 度度量轉弧度量
  *  @param num 欲轉換數值
@@ -106,12 +108,19 @@ double Joystcik_Speed(double x_val, double y_val) {
 /** 速度等比例合理化
  *  @param val[] 速度陣列
  */
-void Speed_Retouch(double val[4]) {
+void Speed_Retouch(double val[4], bool final = false) {
   double offset = 1;
   for (int i = 0; i < 4; i++) {
     if (val[i] != 0) {
-      if (1 / abs(val[i]) < offset) {
-        offset = 1 / abs(val[i]);
+      if (final) {
+        if (_Max_Speed / abs(val[i]) < offset) {
+          offset = _Max_Speed / abs(val[i]);
+        }
+      }
+      else {
+        if (1 / abs(val[i]) < offset) {
+          offset = 1 / abs(val[i]);
+        }
       }
     }
   }
@@ -125,10 +134,14 @@ void Speed_Retouch(double val[4]) {
  *  @param robot Robot Class
  */
 void MotoControl(double val[4], Robot *robot) {
-  robot->moto_0.Set(val[0] * (_Moto_Reverse[0] * 2 - 1));
-  robot->moto_1.Set(val[1] * (_Moto_Reverse[1] * 2 - 1));
-  robot->moto_2.Set(val[2] * (_Moto_Reverse[2] * 2 - 1));
-  robot->moto_3.Set(val[3] * (_Moto_Reverse[3] * 2 - 1));
+  // robot->moto_0.Set(val[0] * (_Moto_Reverse[0] * 2 - 1));
+  // robot->moto_1.Set(val[1] * (_Moto_Reverse[1] * 2 - 1));
+  // robot->moto_2.Set(val[2] * (_Moto_Reverse[2] * 2 - 1));
+  // robot->moto_3.Set(val[3] * (_Moto_Reverse[3] * 2 - 1));
+
+  for (int i = 0; i < 4; i++) {
+    robot->motos[i].Set(val[i] * (_Moto_Reverse[i] * 2 - 1));
+  }
 }
 
 /** 麥輪控制
@@ -151,6 +164,6 @@ void MecanumControl(double deg, double speed, double turn, Robot *robot) {
   out_speed[1] += turn;
   out_speed[2] -= turn;
   out_speed[3] -= turn;
-  Speed_Retouch(out_speed);
+  Speed_Retouch(out_speed, true);
   MotoControl(out_speed, robot);
 }
