@@ -11,8 +11,6 @@
 
 #include <frc/TimedRobot.h>
 #include <frc/smartdashboard/SendableChooser.h>
-#include <frc/motorcontrol/PWMSparkMax.h>
-#include <frc/motorcontrol/PWMTalonSRX.h>
 #include <frc/motorcontrol/Spark.h>
 #include <frc/Joystick.h>
 #include <frc/SPI.h>
@@ -30,21 +28,17 @@ class Robot : public frc::TimedRobot {
   void TestInit() override;
   void TestPeriodic() override;
 
-  // frc::PWMSparkMax moto_0{0};
-  // frc::PWMSparkMax moto_1{1};
-  // frc::PWMSparkMax moto_2{2};
-  // frc::PWMSparkMax moto_3{3};
+  rev::CANSparkMax moto_1{1, rev::CANSparkMax::MotorType::kBrushed};
+  rev::CANSparkMax moto_2{2, rev::CANSparkMax::MotorType::kBrushed};
+  rev::CANSparkMax moto_3{3, rev::CANSparkMax::MotorType::kBrushed};
+  rev::CANSparkMax moto_4{4, rev::CANSparkMax::MotorType::kBrushed};
 
-  frc::PWMTalonSRX moto_4{4};
-  frc::PWMTalonSRX moto_5{5};
-  frc::PWMTalonSRX moto_6{6};
+  rev::CANSparkMax climber_R{6, rev::CANSparkMax::MotorType::kBrushed};
+  rev::CANSparkMax climber_L{7, rev::CANSparkMax::MotorType::kBrushed};
 
-  rev::CANSparkMax motos[4] = {
-    rev::CANSparkMax{0, rev::CANSparkMax::MotorType::kBrushed},
-    rev::CANSparkMax{1, rev::CANSparkMax::MotorType::kBrushed},
-    rev::CANSparkMax{2, rev::CANSparkMax::MotorType::kBrushed},
-    rev::CANSparkMax{3, rev::CANSparkMax::MotorType::kBrushed}
-  };
+  rev::CANSparkMax shooter{5, rev::CANSparkMax::MotorType::kBrushed};
+  rev::CANSparkMax taker{8, rev::CANSparkMax::MotorType::kBrushed};
+  rev::CANSparkMax pusher{9, rev::CANSparkMax::MotorType::kBrushed};
 
   frc::Joystick m_joystick{0};
 

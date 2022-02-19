@@ -13,6 +13,8 @@ void Robot::RobotInit() {
   m_chooser.SetDefaultOption(kAutoNameDefault, kAutoNameDefault);
   m_chooser.AddOption(kAutoNameCustom, kAutoNameCustom);
   frc::SmartDashboard::PutData("Auto Modes", &m_chooser);
+
+  nav_x->ZeroYaw();
 }
 
 /**
@@ -65,6 +67,33 @@ void Robot::TeleopPeriodic() {
   deg = Joystick_Rad(m_joystick.GetRawAxis(0), m_joystick.GetRawAxis(1));
   speed = Joystcik_Speed(m_joystick.GetRawAxis(0), m_joystick.GetRawAxis(1));
   turn = m_joystick.GetRawAxis(4);
+
+  deg -= DEG_TO_RAD(nav_x->GetYaw());
+
+  if (m_joystick.GetRawButton(7)){
+    nav_x->ZeroYaw();
+  }
+
+  if (m_joystick.GetRawButton(6)){
+    pusher.Set(-0.3);
+  }
+  else {
+    pusher.Set(0);
+  }
+
+  if (m_joystick.GetRawButton(2)){
+    taker.Set(0.8);
+  }
+  else if (m_joystick.GetRawButton(8)){
+    taker.Set(-0.8);
+  }
+  else {
+    taker.Set(0);
+  }
+
+  frc::SmartDashboard::PutNumber("navX Yaw", nav_x->GetYaw());
+
+  shooter.Set(m_joystick.GetRawAxis(2));
   
   MecanumControl(deg, speed, turn, this);
 }

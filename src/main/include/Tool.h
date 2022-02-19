@@ -7,7 +7,7 @@
 // 搖桿物理誤差閥值常數
 const double _Joystick_Threshold = 0;
 // 馬達反轉陣列常數
-const bool _Moto_Reverse[4] = {false, false, false, true};
+const bool _Moto_Reverse[4] = {false, false, true, true};
 // 馬達最大速度
 const double _Max_Speed = 0.3;
 
@@ -134,14 +134,10 @@ void Speed_Retouch(double val[4], bool final = false) {
  *  @param robot Robot Class
  */
 void MotoControl(double val[4], Robot *robot) {
-  // robot->moto_0.Set(val[0] * (_Moto_Reverse[0] * 2 - 1));
-  // robot->moto_1.Set(val[1] * (_Moto_Reverse[1] * 2 - 1));
-  // robot->moto_2.Set(val[2] * (_Moto_Reverse[2] * 2 - 1));
-  // robot->moto_3.Set(val[3] * (_Moto_Reverse[3] * 2 - 1));
-
-  for (int i = 0; i < 4; i++) {
-    robot->motos[i].Set(val[i] * (_Moto_Reverse[i] * 2 - 1));
-  }
+  robot->moto_1.Set(val[0] * (_Moto_Reverse[0] * 2 - 1));
+  robot->moto_2.Set(val[1] * (_Moto_Reverse[1] * 2 - 1));
+  robot->moto_3.Set(val[2] * (_Moto_Reverse[2] * 2 - 1));
+  robot->moto_4.Set(val[3] * (_Moto_Reverse[3] * 2 - 1));
 }
 
 /** 麥輪控制
