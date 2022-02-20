@@ -5,11 +5,11 @@
 #include <frc/smartdashboard/SmartDashboard.h>
 
 // 搖桿物理誤差閥值常數
-const double _Joystick_Threshold = 0;
+const double _JOYSTICK_THRESHOLD = 0;
 // 馬達反轉陣列常數
 const bool _Moto_Reverse[4] = {false, false, true, true};
 // 馬達最大速度
-const double _Max_Speed = 0.3;
+const double _MAX_SPEED = 1;
 
 /** 度度量轉弧度量
  *  @param num 欲轉換數值
@@ -32,7 +32,7 @@ double RAD_TO_DEG(double num) {
  *  @return 修正後數值
  */
 double Joystick_Retouch(double val) {
-  if (abs(val) < _Joystick_Threshold) {
+  if (abs(val) < _JOYSTICK_THRESHOLD) {
     return 0;
   }
   else {
@@ -108,13 +108,19 @@ double Joystcik_Speed(double x_val, double y_val) {
 /** 速度等比例合理化
  *  @param val[] 速度陣列
  */
-void Speed_Retouch(double val[4], bool final = false) {
-  double offset = 1;
+void Speed_Retouch(double val[4], bool final = false, double max_speed = -1) {
+  double offset = 1, retouch_speed;
+  if (max_speed == -1) {
+    retouch_speed = _MAX_SPEED;
+  }
+  else {
+    retouch_speed = max_speed;
+  }
   for (int i = 0; i < 4; i++) {
     if (val[i] != 0) {
       if (final) {
-        if (_Max_Speed / abs(val[i]) < offset) {
-          offset = _Max_Speed / abs(val[i]);
+        if (retouch_speed / abs(val[i]) < offset) {
+          offset = retouch_speed / abs(val[i]);
         }
       }
       else {
@@ -146,7 +152,10 @@ void MotoControl(double val[4], Robot *robot) {
  *  @param turn 轉向速度
  *  @param robot Robot Class
  */
-void MecanumControl(double deg, double speed, double turn, Robot *robot) {
+void MecanumControl(double deg, double speed, double turn, Robot *robot, double max_speed = -1) {
+  if (max_speed == -1) {
+    max_speed = _MAX_SPEED;
+  }
   double out_speed[4] = {};
   out_speed[0] = sin(deg) + cos(deg);
   out_speed[1] = sin(deg) - cos(deg);
@@ -156,10 +165,10 @@ void MecanumControl(double deg, double speed, double turn, Robot *robot) {
   for (int i = 0; i < 4; i++) {
     out_speed[i] *= speed;
   }
-  out_speed[0] += turn;
-  out_speed[1] += turn;
-  out_speed[2] -= turn;
-  out_speed[3] -= turn;
-  Speed_Retouch(out_speed, true);
+  out_speed[0] += turn * max_speed;
+  out_speed[1] += turn * max_speed;
+  out_speed[2] -= turn * max_speed;
+  out_speed[3] -= turn * max_speed;
+  Speed_Retouch(out_speed, true, max_speed);
   MotoControl(out_speed, robot);
 }

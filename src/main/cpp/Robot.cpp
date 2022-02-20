@@ -14,6 +14,18 @@ void Robot::RobotInit() {
   m_chooser.AddOption(kAutoNameCustom, kAutoNameCustom);
   frc::SmartDashboard::PutData("Auto Modes", &m_chooser);
 
+  frc::SmartDashboard::PutNumber("Moto Max Speed", 1);
+  frc::SmartDashboard::PutNumber("Climber Speed", 0.3);
+  frc::SmartDashboard::PutNumber("Shoot Moto Speed", 0.6);
+
+  frc::SmartDashboard::PutNumber("Shoot Moto", shooter.Get());
+  frc::SmartDashboard::PutNumber("Climber_L", climber_L.Get());
+  frc::SmartDashboard::PutNumber("Climber_R", climber_R.Get());
+  frc::SmartDashboard::PutNumber("Speed_1", moto_1.Get());
+  frc::SmartDashboard::PutNumber("Speed_2", moto_2.Get());
+  frc::SmartDashboard::PutNumber("Speed_3", moto_3.Get());
+  frc::SmartDashboard::PutNumber("Speed_4", moto_4.Get());
+
   nav_x->ZeroYaw();
 }
 
@@ -62,20 +74,23 @@ void Robot::AutonomousPeriodic() {
 void Robot::TeleopInit() {}
 
 void Robot::TeleopPeriodic() {
-  double deg, speed, turn;
+  double deg, speed, turn, l_speed = 0, r_speed = 0;
 
   deg = Joystick_Rad(m_joystick.GetRawAxis(0), m_joystick.GetRawAxis(1));
   speed = Joystcik_Speed(m_joystick.GetRawAxis(0), m_joystick.GetRawAxis(1));
   turn = m_joystick.GetRawAxis(4);
 
-  deg -= DEG_TO_RAD(nav_x->GetYaw());
+  // deg -= DEG_TO_RAD(nav_x->GetYaw());
 
   if (m_joystick.GetRawButton(7)){
     nav_x->ZeroYaw();
   }
 
   if (m_joystick.GetRawButton(6)){
-    pusher.Set(-0.3);
+    pusher.Set(-0.2);
+  }
+  else if (m_joystick.GetRawButton(5)){
+    pusher.Set(0.2);
   }
   else {
     pusher.Set(0);
@@ -91,11 +106,55 @@ void Robot::TeleopPeriodic() {
     taker.Set(0);
   }
 
-  frc::SmartDashboard::PutNumber("navX Yaw", nav_x->GetYaw());
+  double climber_speed = frc::SmartDashboard::GetNumber("Climber Speed", 0.3);
+  switch (m_joystick.GetPOV()){
+    case 0:
+      l_speed = climber_speed;
+      r_speed = climber_speed;
+      break;
+    case 45:
+      l_speed = 0;
+      r_speed = climber_speed;
+      break;
+    case 135:
+      l_speed = 0;
+      r_speed = -1 * climber_speed;
+      break;
+    case 180:
+      l_speed = -1 * climber_speed;
+      r_speed = -1 * climber_speed;
+      break;
+    case 225:
+      l_speed = -1 * climber_speed;
+      r_speed = 0;
+      break;
+    case 315:
+      l_speed = climber_speed;
+      r_speed = 0;
+      break;
+    default:
+      l_speed = 0;
+      r_speed = 0;
+      break;
+  }
+  climber_L.Set(l_speed);
+  climber_R.Set(r_speed);
 
-  shooter.Set(m_joystick.GetRawAxis(2));
+  shooter.Set(m_joystick.GetRawAxis(2) * frc::SmartDashboard::GetNumber("Shoot Moto Speed", 0.6));
   
-  MecanumControl(deg, speed, turn, this);
+  MecanumControl(deg, speed, turn, this, frc::SmartDashboard::GetNumber("Moto Max Speed", 1));
+
+  frc::SmartDashboard::PutNumber("Shoot Moto", shooter.Get());
+  frc::SmartDashboard::PutNumber("Climber_L", climber_L.Get());
+  frc::SmartDashboard::PutNumber("Climber_R", climber_R.Get());
+  frc::SmartDashboard::PutNumber("Speed_1", moto_1.Get());
+  frc::SmartDashboard::PutNumber("Speed_2", moto_2.Get());
+  frc::SmartDashboard::PutNumber("Speed_3", moto_3.Get());
+  frc::SmartDashboard::PutNumber("Speed_4", moto_4.Get());
+
+  frc::SmartDashboard::PutNumber("navX X", nav_x->GetRawAccelX());
+  frc::SmartDashboard::PutNumber("navX Y", nav_x->GetRawAccelY());
+  frc::SmartDashboard::PutNumber("navX Z", nav_x->GetRawAccelZ());
 }
 
 void Robot::DisabledInit() {}
