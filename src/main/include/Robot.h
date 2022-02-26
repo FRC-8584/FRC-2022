@@ -37,12 +37,14 @@ class Robot : public frc::TimedRobot {
   rev::CANSparkMax climber_L{7, rev::CANSparkMax::MotorType::kBrushed};
 
   rev::CANSparkMax shooter{5, rev::CANSparkMax::MotorType::kBrushed};
-  rev::CANSparkMax taker{8, rev::CANSparkMax::MotorType::kBrushed};
+  rev::CANSparkMax intaker{8, rev::CANSparkMax::MotorType::kBrushed};
   rev::CANSparkMax pusher{9, rev::CANSparkMax::MotorType::kBrushed};
 
   frc::Joystick m_joystick{0};
 
   AHRS *nav_x = new AHRS(frc::SPI::Port::kMXP);
+
+  double nav_x_offset = 0;
 
  private:
   frc::SendableChooser<std::string> m_chooser;

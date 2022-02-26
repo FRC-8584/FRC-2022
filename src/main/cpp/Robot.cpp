@@ -12,21 +12,26 @@
 void Robot::RobotInit() {
   m_chooser.SetDefaultOption(kAutoNameDefault, kAutoNameDefault);
   m_chooser.AddOption(kAutoNameCustom, kAutoNameCustom);
-  frc::SmartDashboard::PutData("Auto Modes", &m_chooser);
-
-  frc::SmartDashboard::PutNumber("Moto Max Speed", 1);
-  frc::SmartDashboard::PutNumber("Climber Speed", 0.3);
-  frc::SmartDashboard::PutNumber("Shoot Moto Speed", 0.6);
-
-  frc::SmartDashboard::PutNumber("Shoot Moto", shooter.Get());
-  frc::SmartDashboard::PutNumber("Climber_L", climber_L.Get());
-  frc::SmartDashboard::PutNumber("Climber_R", climber_R.Get());
-  frc::SmartDashboard::PutNumber("Speed_1", moto_1.Get());
-  frc::SmartDashboard::PutNumber("Speed_2", moto_2.Get());
-  frc::SmartDashboard::PutNumber("Speed_3", moto_3.Get());
-  frc::SmartDashboard::PutNumber("Speed_4", moto_4.Get());
 
   nav_x->ZeroYaw();
+
+  frc::SmartDashboard::PutData("Auto Modes", &m_chooser);
+
+  frc::SmartDashboard::PutNumber("0_Moto Max Speed", 0.5);
+  frc::SmartDashboard::PutNumber("0_Intaker Speed", 0.5);
+  frc::SmartDashboard::PutNumber("0_Pusher Speed", 0.2);
+  frc::SmartDashboard::PutNumber("0_Climber Speed", 0.3);
+  frc::SmartDashboard::PutNumber("0_Shoot Moto Speed", 0.6);
+
+  frc::SmartDashboard::PutNumber("1_Shoot Moto", shooter.Get());
+  frc::SmartDashboard::PutNumber("1_Climber_L", climber_L.Get());
+  frc::SmartDashboard::PutNumber("1_Climber_R", climber_R.Get());
+  frc::SmartDashboard::PutNumber("1_Speed_1", moto_1.Get());
+  frc::SmartDashboard::PutNumber("1_Speed_2", moto_2.Get());
+  frc::SmartDashboard::PutNumber("1_Speed_3", moto_3.Get());
+  frc::SmartDashboard::PutNumber("1_Speed_4", moto_4.Get());
+
+  frc::SmartDashboard::PutNumber("2_NavX_Yaw", nav_x->GetYaw());
 }
 
 /**
@@ -76,37 +81,47 @@ void Robot::TeleopInit() {}
 void Robot::TeleopPeriodic() {
   double deg, speed, turn, l_speed = 0, r_speed = 0;
 
+  double max_speed = frc::SmartDashboard::GetNumber("0_Moto Max Speed", 0.5);
+  double intaker_speed = frc::SmartDashboard::GetNumber("0_Intaker Speed", 0.5);
+  double pusher_speed = frc::SmartDashboard::GetNumber("0_Pusher Speed", 0.2);
+  double climber_speed = frc::SmartDashboard::GetNumber("0_Climber Speed", 0.3);
+  double shoot_speed = frc::SmartDashboard::GetNumber("0_Shoot Moto Speed", 0.6);
+
   deg = Joystick_Rad(m_joystick.GetRawAxis(0), m_joystick.GetRawAxis(1));
   speed = Joystcik_Speed(m_joystick.GetRawAxis(0), m_joystick.GetRawAxis(1));
   turn = m_joystick.GetRawAxis(4);
 
-  // deg -= DEG_TO_RAD(nav_x->GetYaw());
+  deg += DEG_TO_RAD(nav_x->GetYaw());
 
+  // Back
   if (m_joystick.GetRawButton(7)){
     nav_x->ZeroYaw();
   }
 
+  // Right Button
   if (m_joystick.GetRawButton(6)){
-    pusher.Set(-0.2);
+    pusher.Set(-1 * pusher_speed);
   }
+  // Left Button
   else if (m_joystick.GetRawButton(5)){
-    pusher.Set(0.2);
+    pusher.Set(pusher_speed);
   }
   else {
     pusher.Set(0);
   }
 
+  // B
   if (m_joystick.GetRawButton(2)){
-    taker.Set(0.8);
+    intaker.Set(intaker_speed);
   }
-  else if (m_joystick.GetRawButton(8)){
-    taker.Set(-0.8);
+  // X
+  else if (m_joystick.GetRawButton(3)){
+    intaker.Set(-1 * intaker_speed);
   }
   else {
-    taker.Set(0);
+    intaker.Set(0);
   }
 
-  double climber_speed = frc::SmartDashboard::GetNumber("Climber Speed", 0.3);
   switch (m_joystick.GetPOV()){
     case 0:
       l_speed = climber_speed;
@@ -140,21 +155,19 @@ void Robot::TeleopPeriodic() {
   climber_L.Set(l_speed);
   climber_R.Set(r_speed);
 
-  shooter.Set(m_joystick.GetRawAxis(2) * frc::SmartDashboard::GetNumber("Shoot Moto Speed", 0.6));
+  shooter.Set(m_joystick.GetRawAxis(2) * shoot_speed);
   
-  MecanumControl(deg, speed, turn, this, frc::SmartDashboard::GetNumber("Moto Max Speed", 1));
+  MecanumControl(deg, speed, turn, this, max_speed);
 
-  frc::SmartDashboard::PutNumber("Shoot Moto", shooter.Get());
-  frc::SmartDashboard::PutNumber("Climber_L", climber_L.Get());
-  frc::SmartDashboard::PutNumber("Climber_R", climber_R.Get());
-  frc::SmartDashboard::PutNumber("Speed_1", moto_1.Get());
-  frc::SmartDashboard::PutNumber("Speed_2", moto_2.Get());
-  frc::SmartDashboard::PutNumber("Speed_3", moto_3.Get());
-  frc::SmartDashboard::PutNumber("Speed_4", moto_4.Get());
+  frc::SmartDashboard::PutNumber("1_Shoot Moto", shooter.Get());
+  frc::SmartDashboard::PutNumber("1_Climber_L", climber_L.Get());
+  frc::SmartDashboard::PutNumber("1_Climber_R", climber_R.Get());
+  frc::SmartDashboard::PutNumber("1_Speed_1", moto_1.Get());
+  frc::SmartDashboard::PutNumber("1_Speed_2", moto_2.Get());
+  frc::SmartDashboard::PutNumber("1_Speed_3", moto_3.Get());
+  frc::SmartDashboard::PutNumber("1_Speed_4", moto_4.Get());
 
-  frc::SmartDashboard::PutNumber("navX X", nav_x->GetRawAccelX());
-  frc::SmartDashboard::PutNumber("navX Y", nav_x->GetRawAccelY());
-  frc::SmartDashboard::PutNumber("navX Z", nav_x->GetRawAccelZ());
+  frc::SmartDashboard::PutNumber("2_NavX_Yaw", nav_x->GetYaw());
 }
 
 void Robot::DisabledInit() {}
