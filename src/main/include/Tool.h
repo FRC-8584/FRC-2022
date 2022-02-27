@@ -11,6 +11,20 @@ const bool _Moto_Reverse[4] = {false, false, true, true};
 // 馬達最大速度
 const double _MAX_SPEED = 1;
 
+double max(double a, double b) {
+  if (b > a) {
+    return b;
+  }
+  return a;
+}
+
+double min(double a, double b) {
+  if (b < a) {
+    return b;
+  }
+  return a;
+}
+
 /** 度度量轉弧度量
  *  @param num 欲轉換數值
  *  @return 弧度量(-π~π)

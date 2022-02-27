@@ -14,6 +14,7 @@ void Robot::RobotInit() {
   m_chooser.AddOption(kAutoNameCustom, kAutoNameCustom);
 
   nav_x->ZeroYaw();
+  nav_x_offset = nav_x->GetYaw();
 
   frc::SmartDashboard::PutData("Auto Modes", &m_chooser);
 
@@ -89,13 +90,22 @@ void Robot::TeleopPeriodic() {
 
   deg = Joystick_Rad(m_joystick.GetRawAxis(0), m_joystick.GetRawAxis(1));
   speed = Joystcik_Speed(m_joystick.GetRawAxis(0), m_joystick.GetRawAxis(1));
-  turn = m_joystick.GetRawAxis(4);
+  turn = Joystick_Retouch(m_joystick.GetRawAxis(4));
+
+  if (turn != 0) {
+    nav_x_offset = nav_x->GetYaw();
+  }
+  else {
+    double cps = nav_x->GetYaw() - nav_x_offset;
+    turn += cps / max(abs(cps), 90);
+  }
 
   deg += DEG_TO_RAD(nav_x->GetYaw());
 
   // Back
   if (m_joystick.GetRawButton(7)){
     nav_x->ZeroYaw();
+    nav_x_offset = nav_x->GetYaw();
   }
 
   // Right Button
