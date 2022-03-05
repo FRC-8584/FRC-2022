@@ -140,12 +140,14 @@ void Robot::TeleopPeriodic() {
   speed *= 1 - Joystick_Retouch(m_joystick.GetRawAxis(3));
   turn = Joystick_Retouch(m_joystick.GetRawAxis(4));
 
-  if (turn != 0 || abs(speed) < 0.05  && navx_enable) {
-    nav_x_offset = nav_x->GetYaw();
-  }
-  else {
-    double cps = nav_x->GetYaw() - nav_x_offset;
-    turn -= 0.5 * cps / max(abs(cps), 180);
+  if (navx_enable) {
+    if (turn != 0 || abs(speed) < 0.05) {
+      nav_x_offset = nav_x->GetYaw();
+    }
+    else {
+      double cps = nav_x->GetYaw() - nav_x_offset;
+      turn -= 0.5 * cps / max(abs(cps), 180);
+    }
   }
 
   // Y
