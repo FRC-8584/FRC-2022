@@ -14,6 +14,8 @@
 #include <frc/motorcontrol/Spark.h>
 #include <frc/Joystick.h>
 #include <frc/SPI.h>
+#include <frc/Encoder.h>
+#include <frc/Timer.h>
 
 class Robot : public frc::TimedRobot {
  public:
@@ -45,6 +47,8 @@ class Robot : public frc::TimedRobot {
   AHRS *nav_x = new AHRS(frc::SPI::Port::kMXP);
 
   double nav_x_offset = 0;
+
+  frc::Encoder encoder_0{2, 3};
 
  private:
   frc::SendableChooser<std::string> m_chooser;

@@ -5,11 +5,25 @@
 #include <frc/smartdashboard/SmartDashboard.h>
 
 // 搖桿物理誤差閥值常數
-const double _JOYSTICK_THRESHOLD = 0;
+const double _JOYSTICK_THRESHOLD = 0.05;
 // 馬達反轉陣列常數
 const bool _Moto_Reverse[4] = {false, false, true, true};
 // 馬達最大速度
 const double _MAX_SPEED = 1;
+
+double max(double a, double b) {
+  if (b > a) {
+    return b;
+  }
+  return a;
+}
+
+double min(double a, double b) {
+  if (b < a) {
+    return b;
+  }
+  return a;
+}
 
 /** 度度量轉弧度量
  *  @param num 欲轉換數值
