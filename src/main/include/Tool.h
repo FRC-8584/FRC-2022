@@ -5,7 +5,7 @@
 #include <frc/smartdashboard/SmartDashboard.h>
 
 // 搖桿物理誤差閥值常數
-const double _JOYSTICK_THRESHOLD = 0;
+const double _JOYSTICK_THRESHOLD = 0.05;
 // 馬達反轉陣列常數
 const bool _Moto_Reverse[4] = {false, false, true, true};
 // 馬達最大速度
