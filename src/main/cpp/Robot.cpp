@@ -27,7 +27,7 @@ void Robot::RobotInit() {
   frc::SmartDashboard::PutNumber("0_Pusher Speed", 0.7);
   frc::SmartDashboard::PutNumber("0_Climber Speed", 1);
   frc::SmartDashboard::PutNumber("0_Shoot Moto Speed", 0.7);
-  frc::SmartDashboard::PutNumber("0_NavX Enable", 1);
+  frc::SmartDashboard::PutNumber("0_NavX Enable", 0);
 
   frc::SmartDashboard::PutNumber("1_Shoot Moto", shooter.Get());
   frc::SmartDashboard::PutNumber("1_Climber_L", climber_L.Get());
@@ -133,7 +133,7 @@ void Robot::TeleopPeriodic() {
   double pusher_speed = frc::SmartDashboard::GetNumber("0_Pusher Speed", 0.2);
   double climber_speed = frc::SmartDashboard::GetNumber("0_Climber Speed", 0.3);
   double shoot_speed = frc::SmartDashboard::GetNumber("0_Shoot Moto Speed", 0.6);
-  bool navx_enable = frc::SmartDashboard::GetNumber("0_NavX Enable", 1) >= 1;
+  bool navx_enable = frc::SmartDashboard::GetNumber("0_NavX Enable", 0) >= 1;
 
   deg = Joystick_Rad(m_joystick.GetRawAxis(0), m_joystick.GetRawAxis(1));
   speed = Joystcik_Speed(m_joystick.GetRawAxis(0), m_joystick.GetRawAxis(1));
